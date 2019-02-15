@@ -440,11 +440,11 @@ func New(params DriverParameters) (*Driver, error) {
 	// }
 
 	d := &driver{
-		S3:        s3obj,
-		Bucket:    params.Bucket,
-		ChunkSize: params.ChunkSize,
-		Encrypt:   params.Encrypt,
-		KeyID:     params.KeyID,
+		S3:                          s3obj,
+		Bucket:                      params.Bucket,
+		ChunkSize:                   params.ChunkSize,
+		Encrypt:                     params.Encrypt,
+		KeyID:                       params.KeyID,
 		MultipartCopyChunkSize:      params.MultipartCopyChunkSize,
 		MultipartCopyMaxConcurrency: params.MultipartCopyMaxConcurrency,
 		MultipartCopyThresholdSize:  params.MultipartCopyThresholdSize,
@@ -815,6 +815,7 @@ ListLoop:
 	// need to chunk objects into groups of 1000 per s3 restrictions
 	total := len(s3Objects)
 	for i := 0; i < total; i += 1000 {
+		fmt.Printf("DELETING %+v IN %s\n", s3Objects[i:min(i+1000, total)], d.Bucket)
 		_, err := d.S3.DeleteObjects(&s3.DeleteObjectsInput{
 			Bucket: aws.String(d.Bucket),
 			Delete: &s3.Delete{
